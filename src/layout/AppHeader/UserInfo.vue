@@ -2,7 +2,7 @@
   <el-dropdown>
     <span class="el-dropdown-link">
       {{ store.user?.account }}
-<!--      <i class="el-icon-arrow-down el-icon&#45;&#45;right" />-->
+      <!--      <i class="el-icon-arrow-down el-icon&#45;&#45;right" />-->
     </span>
     <template #dropdown>
       <el-dropdown-menu>
@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { logout } from '@/api/common'
-import { useRouter } from 'vue-router'
-import { useStore } from '@/store'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {logout} from '@/api/common'
+import {useRouter} from 'vue-router'
+import {useStore} from '@/store'
 
 const router = useRouter()
 const store = useStore()
@@ -35,8 +35,7 @@ const handleLogou = () => {
     await logout()
 
     // 清除用户登录信息
-    store.setUser(null)
-
+    store.$reset()
     ElMessage({
       type: 'success',
       message: '退出成功!'

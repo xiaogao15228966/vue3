@@ -46,7 +46,7 @@ request.interceptors.response.use(function (response: AxiosResponse) {
             cancelButtonText: '取消'
         }).then(() => {
             // 清除本地过期的登录状态
-            store.setUser(null)
+            store.$reset()
             // 跳转到登录页面
             router.push({
                 name: 'login',

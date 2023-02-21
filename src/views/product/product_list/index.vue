@@ -1,0 +1,7 @@
+<template>
+  产品列表
+</template>
+<script setup lang="ts">
+</script>
+<style scoped lang='scss'>
+</style>

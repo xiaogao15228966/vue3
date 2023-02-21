@@ -5,11 +5,8 @@ import setting from "@/router/modules/setting";
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 import {useStore} from "@/store/index"
-import pinia from "@/store/index"
 import {storeToRefs} from "pinia";
 
-const state = useStore(pinia)
-const {user} = storeToRefs(state)
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
@@ -18,6 +15,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/admin',
+        name:"admin",
         component: () => import('@/layout/appLayout.vue'),
         meta: {
             requiresAuth: true
@@ -34,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         ]
     },
     {
-        path: '/login',
+        path: '/admin/login',
         name: 'login',
         component: () => import('../views/login/index.vue')
     }
@@ -44,18 +42,34 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes
 })
+let registerRouteFresh = true;//是否还没有动态加载过
 // VueRouter 4 中可以不写 next 了，默认就是通过状态
 router.beforeEach((to, from) => {
     nprogress.start()
+    const state = useStore()
+    const {user, menus} = storeToRefs(state)
     if (to.meta.requiresAuth && !user.value) {
         // 此路由需要授权，请检查是否已登录
         // 如果没有，则重定向到登录页面
         return {
-            path: '/login',
+            path: '/admin/login',
             // 保存我们所在的位置，以便以后再来
             query: {redirect: to.fullPath}
         }
     }
+    // if (registerRouteFresh && user.value) {//还没有动态加载过
+    //     //动态注册路由 <----------------------------------------
+    //     menus.value.forEach(itemRouter=>{
+    //         router.addRoute("admin", {
+    //             path: `${itemRouter.path}`,
+    //             component: () => import(`@/views${itemRouter.path}/index.vue`)
+    //         });
+    //     })
+    //
+    //     // routeAssembler(router);
+    //     registerRouteFresh = false;
+    //     // next({ ...to, replace: true });
+    // }
 })
 
 router.afterEach(() => {

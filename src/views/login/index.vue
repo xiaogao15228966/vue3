@@ -97,15 +97,14 @@ const handleSubmit = async () => {
     return
   }
   store.setMenus(data.menus)
+  console.log(data.menus)
   // data.menus.forEach(item=>{
   //   router.addRoute({ path: item.path, component:  })
   // })
-  console.log(data.menus)
   store.setUser({
     ...data.user_info,
     token: data.token
   })
-  console.log(store.user)
   ElMessage.success("登录成功")
   let redirect = route.query.redirect || "/"
   router.replace("/")
