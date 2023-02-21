@@ -3,6 +3,7 @@ export interface IUserInfo {
     account: string
     head_pic: string
 }
+
 export interface IMenu {
     path: string
     title: string

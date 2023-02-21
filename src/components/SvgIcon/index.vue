@@ -41,5 +41,6 @@ onMounted(()=>{
   position: relative;
   fill: currentColor;
   vertical-align: -2px;
+  cursor: pointer;
 }
 </style>

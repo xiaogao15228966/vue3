@@ -47,16 +47,22 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" class="submit-button" type="primary"  native-type="submit">登录</el-button>
+        <el-button :loading="loading" class="submit-button" type="primary" native-type="submit">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script setup lang="ts">
 import {onMounted, reactive, ref} from "vue";
-import {ElMessage, FormInstance, FormRules} from "element-plus";
+import {ElMessage, FormInstance} from "element-plus";
 import {getCaptcha, login} from "@/api/common";
+import {useStore} from "@/store/index"
+import {useRoute, useRouter} from "vue-router";
+import {IFormRule} from "@/types/element-plus";
 
+const router = useRouter()
+const route = useRoute()
+const store = useStore()
 let form = ref<FormInstance | null>(null);
 const captchaSrc = ref('')
 const loading = ref(false)
@@ -65,7 +71,7 @@ const user = reactive({
   pwd: '123456',
   imgcode: ''
 })
-const rules = reactive<FormRules>({
+const rules = reactive<IFormRule>({
   account: [
     {required: true, message: 'Please input account', trigger: 'change'},
   ],
@@ -76,27 +82,39 @@ const rules = reactive<FormRules>({
     {required: true, message: 'Please input imgcode', trigger: 'change'},
   ],
 })
-const handleSubmit = async() => {
+const handleSubmit = async () => {
   const valid = await form.value?.validate()
   if (!valid) {
     return false
   }
   loading.value = true
-  let data  = await login(user).catch(()=>{
+  let data = await login(user).catch(() => {
     loadCaptcha()
-  }).finally(()=>{
+  }).finally(() => {
     loading.value = false
   })
-  if(!data){
+  if (!data) {
     return
   }
+  store.setMenus(data.menus)
+  // data.menus.forEach(item=>{
+  //   router.addRoute({ path: item.path, component:  })
+  // })
+  console.log(data.menus)
+  store.setUser({
+    ...data.user_info,
+    token: data.token
+  })
+  console.log(store.user)
   ElMessage.success("登录成功")
+  let redirect = route.query.redirect || "/"
+  router.replace("/")
 }
-const loadCaptcha = async ()=>{
+const loadCaptcha = async () => {
   let data = await getCaptcha()
   captchaSrc.value = URL.createObjectURL(data)
 }
-onMounted(()=>{
+onMounted(() => {
   loadCaptcha()
 })
 </script>
@@ -131,12 +149,14 @@ onMounted(()=>{
       display: flex;
       align-items: center;
       justify-content: center;
+
       .imgcode {
         height: 37px;
       }
     }
   }
-  .submit-button{
+
+  .submit-button {
     width: 100%;
   }
 }

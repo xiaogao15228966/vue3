@@ -13,7 +13,12 @@ export const login = (
         data
     })
 }
-
+export const logout = () => {
+    return request({
+        method: 'GET',
+        url: '/setting/admin/logout',
+    })
+}
 export const getCaptcha = ()=>{
     return request<Blob>({
         method:'GET',
